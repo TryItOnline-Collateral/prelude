@@ -2,7 +2,25 @@
 
 import sys
 
-NUMERIC_OUTPUT = True
+NUMERIC_INPUT = NUMERIC_OUTPUT = False
+
+try:
+    del sys.argv[sys.argv.index('-i')]
+    NUMERIC_INPUT = True
+except:
+    pass
+
+try:
+    del sys.argv[sys.argv.index('-o')]
+    NUMERIC_OUTPUT = True
+except:
+    pass
+
+try:
+    del sys.argv[sys.argv.index('-n')]
+    NUMERIC_INPUT = NUMERIC_OUTPUT = True
+except:
+    pass
 
 try:
     filename = sys.argv[1]
@@ -109,9 +127,15 @@ while cp < numInstructions:
         elif i == '#':
             stacks[voice].drop()
         elif i == '?':
-            char = sys.stdin.read(1)
-            if not char: char = '\0'
-            stacks[voice].push(ord(char))
+            if NUMERIC_INPUT:
+                try:
+                    stacks[voice].push(int(raw_input() or 0))
+                except Exception, e:
+                    stacks[voice].push(0)
+            else:
+                char = sys.stdin.read(1)
+                if not char: char = '\0'
+                stacks[voice].push(ord(char))
         elif i == '!':
             if NUMERIC_OUTPUT:
                 print stacks[voice].pop()
